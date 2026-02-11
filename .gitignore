@@ -1,0 +1,10 @@
+/_build/
+/deps/
+/.elixir_ls/
+/cover/
+
+# Runtime and local assets
+/priv/static/
+
+# Environment
+.env

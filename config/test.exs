@@ -1,0 +1,8 @@
+import Config
+
+config :reverse_proxy, ReverseProxyWeb.Endpoint,
+  http: [ip: {127, 0, 0, 1}, port: 4002],
+  secret_key_base: "test-local-secret-key-base-0123456789abcdefghijklmnopqrstuvwxyz-0123456789",
+  server: false
+
+config :logger, level: :warning

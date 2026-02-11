@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  reverse-proxy:
+    build: .
+    ports:
+      - "80:4000"
+      - "443:4443"
+    environment:
+      SECRET_KEY_BASE: "replace-with-real-secret"
+      DOCKER_API_BASE: "http://docker-proxy:2375"
+      PROXY_ADMIN_USER: "admin"
+      PROXY_ADMIN_PASS: "admin"
+      PROXY_TLS_CERT_PATH: "/certs/tls.crt"
+      PROXY_TLS_KEY_PATH: "/certs/tls.key"
+    volumes:
+      - ./priv/certs:/certs:ro
+    depends_on:
+      - docker-proxy
+
+  docker-proxy:
+    image: tecnativa/docker-socket-proxy:0.1.1
+    environment:
+      CONTAINERS: 1
+      EVENTS: 1
+      INFO: 1
+      NETWORKS: 1
+      PING: 1
+      VERSION: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "2375:2375"
