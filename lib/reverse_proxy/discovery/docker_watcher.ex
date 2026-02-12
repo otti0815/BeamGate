@@ -25,6 +25,7 @@ defmodule ReverseProxy.Discovery.DockerWatcher do
 
   @impl true
   def handle_info(:refresh, state) do
+    # Only timer-driven refreshes schedule the next tick; manual refresh_now/0 reuses this schedule.
     state = refresh(state)
     Process.send_after(self(), :refresh, state.interval)
     {:noreply, state}
@@ -38,6 +39,7 @@ defmodule ReverseProxy.Discovery.DockerWatcher do
   end
 
   defp reconcile(containers, %{known: known} = state) do
+    # The in-memory map lets us remove stale routes when containers disappear.
     enabled =
       containers
       |> Enum.filter(&enabled_container?/1)

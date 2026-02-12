@@ -38,6 +38,7 @@ Supported container labels:
 
 - `PORT` (default `4000`)
 - `HTTPS_PORT` (default `4443`)
+- `SECRET_KEY_BASE` (required in `prod`; use `mix phx.gen.secret`)
 - `PROXY_ADMIN_USER` (default `admin`)
 - `PROXY_ADMIN_PASS` (default `admin`)
 - `PROXY_ADMIN_IP_WHITELIST` (optional comma-separated IPs)

@@ -77,6 +77,7 @@ defmodule ReverseProxy.ControlPlane do
 
   @impl true
   def init(_) do
+    # Hot-path reads (request routing) hit ETS directly; writes are serialized via this GenServer.
     :ets.new(@routers, [:named_table, :set, :public, read_concurrency: true])
     :ets.new(@services, [:named_table, :set, :public, read_concurrency: true])
     :ets.new(@endpoints, [:named_table, :set, :public, read_concurrency: true])
@@ -158,6 +159,7 @@ defmodule ReverseProxy.ControlPlane do
   end
 
   defp round_robin(service_id, endpoints) do
+    # Start at -1 so the first increment selects index 0.
     idx = :ets.update_counter(@lb, service_id, {2, 1}, {service_id, -1})
     Enum.at(endpoints, rem(idx, length(endpoints)))
   end

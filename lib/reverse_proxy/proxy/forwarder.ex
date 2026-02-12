@@ -1,6 +1,7 @@
 defmodule ReverseProxy.Proxy.Forwarder do
   @moduledoc false
 
+  # RFC hop-by-hop headers should not be forwarded by proxies.
   @hop_by_hop_headers ~w(connection keep-alive proxy-authenticate proxy-authorization te trailer transfer-encoding upgrade)
 
   def forward(conn, route, endpoint) do
@@ -16,6 +17,7 @@ defmodule ReverseProxy.Proxy.Forwarder do
   defp read_body(conn), do: read_body(conn, [])
 
   defp read_body(conn, acc) do
+    # MVP tradeoff: buffer request body before forwarding. Response path is still streamed.
     case Plug.Conn.read_body(conn, length: 8_000_000, read_length: 1_000_000, read_timeout: 15_000) do
       {:ok, chunk, _conn} -> {:ok, IO.iodata_to_binary(Enum.reverse([chunk | acc]))}
       {:more, chunk, conn} -> read_body(conn, [chunk | acc])
@@ -72,6 +74,7 @@ defmodule ReverseProxy.Proxy.Forwarder do
       |> Enum.reduce(conn, fn {k, v}, c -> Plug.Conn.put_resp_header(c, String.downcase(k), v) end)
       |> ReverseProxy.Proxy.HeaderInjector.inject_response_headers(route.middleware || %{})
 
+    # Send headers once, then stream upstream chunks directly to the client.
     {:ok, conn} = Plug.Conn.send_chunked(conn, status)
     %{acc | conn: conn, started?: true}
   end

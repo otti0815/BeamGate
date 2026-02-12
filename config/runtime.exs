@@ -1,9 +1,8 @@
 import Config
 
-if config_env() in [:dev, :prod] do
+if config_env() == :prod do
   cert_path = Application.fetch_env!(:reverse_proxy, :cert_path)
   key_path = Application.fetch_env!(:reverse_proxy, :key_path)
-  env_secret = System.get_env("SECRET_KEY_BASE")
 
   https_opts =
     if File.exists?(cert_path) and File.exists?(key_path) do
@@ -18,24 +17,10 @@ if config_env() in [:dev, :prod] do
       nil
     end
 
-  secret_key_base =
-    cond do
-      is_binary(env_secret) and byte_size(env_secret) >= 64 ->
-        env_secret
-
-      is_binary(env_secret) and byte_size(env_secret) < 64 ->
-        raise "SECRET_KEY_BASE must be at least 64 bytes"
-
-      config_env() == :prod ->
-        raise "SECRET_KEY_BASE is missing. Generate one with: mix phx.gen.secret"
-
-      true ->
-        "dev-local-secret-key-base-0123456789abcdefghijklmnopqrstuvwxyz-0123456789"
-    end
-
+  # In production, sessions must use a real external secret.
   config :reverse_proxy, ReverseProxyWeb.Endpoint,
     http: [ip: {0, 0, 0, 0}, port: String.to_integer(System.get_env("PORT", "4000"))],
     https: https_opts,
-    secret_key_base: secret_key_base,
+    secret_key_base: System.fetch_env!("SECRET_KEY_BASE"),
     server: true
 end
