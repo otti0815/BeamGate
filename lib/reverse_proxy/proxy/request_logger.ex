@@ -13,7 +13,8 @@ defmodule ReverseProxy.Proxy.RequestLogger do
   end
 
   def finish(ctx, status, route, endpoint) do
-    duration_ms = System.convert_time_unit(System.monotonic_time() - ctx.started_at, :native, :millisecond)
+    duration_ms =
+      System.convert_time_unit(System.monotonic_time() - ctx.started_at, :native, :millisecond)
 
     Logger.info("proxy_request",
       request_id: ctx.request_id,

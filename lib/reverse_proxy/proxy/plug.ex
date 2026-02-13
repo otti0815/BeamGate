@@ -25,7 +25,7 @@ defmodule ReverseProxy.Proxy.Plug do
         with {:ok, conn} <- BasicAuth.authorize(conn, route.middleware || %{}),
              endpoint when not is_nil(endpoint) <- ControlPlane.select_endpoint(route.service_id),
              {:ok, conn} <- Forwarder.forward(conn, route, endpoint) do
-         status = conn.status || 200
+          status = conn.status || 200
           ControlPlane.incr_metric(:proxy_requests_total, 1)
           ControlPlane.set_metric(:proxy_last_status, status)
           finish(conn, log_ctx, status, route, endpoint)

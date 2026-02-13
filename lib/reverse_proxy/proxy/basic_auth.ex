@@ -12,7 +12,9 @@ defmodule ReverseProxy.Proxy.BasicAuth do
 
   defp enforce(conn, expected_user, expected_pass) do
     case Plug.BasicAuth.parse_basic_auth(conn) do
-      {user, pass} when user == expected_user and pass == expected_pass -> {:ok, conn}
+      {user, pass} when user == expected_user and pass == expected_pass ->
+        {:ok, conn}
+
       _ ->
         conn =
           conn

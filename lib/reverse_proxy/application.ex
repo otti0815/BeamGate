@@ -6,6 +6,7 @@ defmodule ReverseProxy.Application do
     children = [
       {Finch, name: ReverseProxy.Finch},
       {Phoenix.PubSub, name: ReverseProxy.PubSub},
+      ReverseProxy.Search.Supervisor,
       ReverseProxy.ControlPlane,
       ReverseProxy.Proxy.HealthChecker,
       ReverseProxy.Discovery.DockerWatcher,

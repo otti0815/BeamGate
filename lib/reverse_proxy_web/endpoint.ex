@@ -7,8 +7,7 @@ defmodule ReverseProxyWeb.Endpoint do
     signing_salt: "dashboardsalt"
   ]
 
-  socket "/live", Phoenix.LiveView.Socket,
-    websocket: [connect_info: [session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
   if code_reloading? do
     plug Phoenix.LiveReloader

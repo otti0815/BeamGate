@@ -29,7 +29,10 @@ defmodule ReverseProxy.ControlPlane do
 
   def put_endpoint(attrs), do: GenServer.call(__MODULE__, {:put_endpoint, attrs})
   def delete_endpoint(id), do: GenServer.call(__MODULE__, {:delete_endpoint, id})
-  def delete_endpoints_for_service(service_id), do: GenServer.call(__MODULE__, {:delete_endpoints_for_service, service_id})
+
+  def delete_endpoints_for_service(service_id),
+    do: GenServer.call(__MODULE__, {:delete_endpoints_for_service, service_id})
+
   def list_endpoints, do: :ets.tab2list(@endpoints) |> Enum.map(&elem(&1, 1))
 
   def list_endpoints_for_service(service_id) do
@@ -39,16 +42,20 @@ defmodule ReverseProxy.ControlPlane do
     |> Enum.filter(&(&1.service_id == service_id))
   end
 
-  def mark_endpoint_health(endpoint_id, status), do: GenServer.cast(__MODULE__, {:mark_endpoint_health, endpoint_id, status})
+  def mark_endpoint_health(endpoint_id, status),
+    do: GenServer.cast(__MODULE__, {:mark_endpoint_health, endpoint_id, status})
 
   def match_router(host, path, tls?) do
     list_routers()
     |> Enum.filter(fn router ->
       host_ok?(router.host, host) and path_ok?(router.path_prefix, path) and tls_ok?(router, tls?)
     end)
-    |> Enum.sort_by(fn router ->
-      {(router.host && 1) || 0, String.length(router.path_prefix || "/")}
-    end, :desc)
+    |> Enum.sort_by(
+      fn router ->
+        {(router.host && 1) || 0, String.length(router.path_prefix || "/")}
+      end,
+      :desc
+    )
     |> List.first()
   end
 
@@ -67,11 +74,14 @@ defmodule ReverseProxy.ControlPlane do
     end
   end
 
-  def put_cert(domain, cert_pem, key_pem), do: GenServer.call(__MODULE__, {:put_cert, domain, cert_pem, key_pem})
+  def put_cert(domain, cert_pem, key_pem),
+    do: GenServer.call(__MODULE__, {:put_cert, domain, cert_pem, key_pem})
 
   def get_cert(domain), do: lookup(@certs, domain)
 
-  def incr_metric(metric, value \\ 1), do: :ets.update_counter(@metrics, metric, {2, value}, {metric, 0})
+  def incr_metric(metric, value \\ 1),
+    do: :ets.update_counter(@metrics, metric, {2, value}, {metric, 0})
+
   def set_metric(metric, value), do: :ets.insert(@metrics, {metric, value})
   def metrics, do: :ets.tab2list(@metrics) |> Map.new()
 

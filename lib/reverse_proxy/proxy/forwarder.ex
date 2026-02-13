@@ -18,7 +18,11 @@ defmodule ReverseProxy.Proxy.Forwarder do
 
   defp read_body(conn, acc) do
     # MVP tradeoff: buffer request body before forwarding. Response path is still streamed.
-    case Plug.Conn.read_body(conn, length: 8_000_000, read_length: 1_000_000, read_timeout: 15_000) do
+    case Plug.Conn.read_body(conn,
+           length: 8_000_000,
+           read_length: 1_000_000,
+           read_timeout: 15_000
+         ) do
       {:ok, chunk, _conn} -> {:ok, IO.iodata_to_binary(Enum.reverse([chunk | acc]))}
       {:more, chunk, conn} -> read_body(conn, [chunk | acc])
       {:error, reason} -> {:error, reason}
@@ -42,14 +46,17 @@ defmodule ReverseProxy.Proxy.Forwarder do
   defp stream_response(request, conn, route) do
     acc = %{conn: conn, status: nil, headers: [], started?: false}
 
-    case Finch.stream(request, ReverseProxy.Finch, acc, &handle_stream_event(&1, &2, route), receive_timeout: 30_000) do
+    case Finch.stream(request, ReverseProxy.Finch, acc, &handle_stream_event(&1, &2, route),
+           receive_timeout: 30_000
+         ) do
       {:ok, %{conn: conn}} -> {:ok, conn}
       {:error, reason, _acc} -> {:error, reason}
       {:error, reason} -> {:error, reason}
     end
   end
 
-  defp handle_stream_event({:status, status}, acc, route), do: maybe_start_response(%{acc | status: status}, route)
+  defp handle_stream_event({:status, status}, acc, route),
+    do: maybe_start_response(%{acc | status: status}, route)
 
   defp handle_stream_event({:headers, headers}, acc, route) do
     filtered = Enum.reject(headers, fn {k, _} -> String.downcase(k) in @hop_by_hop_headers end)

@@ -13,7 +13,9 @@ defmodule ReverseProxy.Proxy.HeaderInjector do
   def inject_response_headers(conn, middleware) do
     middleware
     |> Map.get(:response_headers, %{})
-    |> Enum.reduce(conn, fn {k, v}, acc -> Plug.Conn.put_resp_header(acc, normalize_key(k), to_string(v)) end)
+    |> Enum.reduce(conn, fn {k, v}, acc ->
+      Plug.Conn.put_resp_header(acc, normalize_key(k), to_string(v))
+    end)
   end
 
   defp normalize_key(key), do: key |> to_string() |> String.downcase()

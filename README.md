@@ -74,3 +74,44 @@ Containerized run (single-node): `docker compose up --build`
 - Docker discovery is polling-based in this MVP (set `DOCKER_API_BASE` to a reachable Docker API endpoint, e.g. `http://localhost:2375`).
 - Upstream response streaming is chunked; request body handling currently reads request body before forwarding.
 - This is single-node by design.
+
+## Full-Text Search Engine (MVP)
+
+This project now also contains an in-process search engine implementation with:
+
+- JSON document CRUD and versioning
+- Inverted index with shard + replica processes
+- Analyzer pipeline (tokenizer, normalization, stopwords, stemming, synonyms)
+- Query DSL (`term`, `match`, `phrase`, `bool`, `fuzzy`, `wildcard`, `range`)
+- BM25 relevance scoring
+- Aggregations (`terms`, `range`, `histogram`, `date_histogram`, `count/sum/avg/min/max`)
+- Pagination via `from/size` and `search_after`
+
+### Search API
+
+Base path: `/api/v1/search`
+
+- `PUT /indexes/:index`
+- `DELETE /indexes/:index`
+- `GET /indexes/:index`
+- `PUT /indexes/:index/documents/:id`
+- `GET /indexes/:index/documents/:id`
+- `DELETE /indexes/:index/documents/:id`
+- `POST /indexes/:index/_bulk`
+- `POST /indexes/:index/_search`
+- `POST /indexes/:index/_refresh`
+
+Example:
+
+```bash
+curl -X PUT http://localhost:4000/api/v1/search/indexes/articles \
+  -H 'content-type: application/json' \
+  -d '{
+    "settings": {"number_of_shards": 2, "number_of_replicas": 1},
+    "mappings": {
+      "title": {"type": "text"},
+      "year": {"type": "integer"},
+      "tag": {"type": "keyword"}
+    }
+  }'
+```

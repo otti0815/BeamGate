@@ -57,7 +57,9 @@ defmodule ReverseProxyWeb.DashboardLive do
 
   def handle_event("delete_route", %{"id" => router_id}, socket) do
     case ControlPlane.get_router(router_id) do
-      nil -> {:noreply, load_state(socket)}
+      nil ->
+        {:noreply, load_state(socket)}
+
       route ->
         ControlPlane.delete_endpoints_for_service(route.service_id)
         ControlPlane.delete_router(route.id)
