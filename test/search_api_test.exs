@@ -1,11 +1,11 @@
-defmodule ReverseProxyWeb.SearchApiTest do
+defmodule BeamGateWeb.SearchApiTest do
   use ExUnit.Case, async: false
   import Plug.Conn
   import Phoenix.ConnTest
 
-  alias ReverseProxy.Search
+  alias BeamGate.Search
 
-  @endpoint ReverseProxyWeb.Endpoint
+  @endpoint BeamGateWeb.Endpoint
 
   setup do
     {:ok, indexes} = Search.list_indexes()

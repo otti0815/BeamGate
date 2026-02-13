@@ -1,19 +1,19 @@
 import Config
 
-config :reverse_proxy,
+config :beam_gate,
   ecto_repos: []
 
-config :reverse_proxy, ReverseProxyWeb.Endpoint,
+config :beam_gate, BeamGateWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: ReverseProxyWeb.ErrorHTML, json: ReverseProxyWeb.ErrorJSON],
+    formats: [html: BeamGateWeb.ErrorHTML, json: BeamGateWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: ReverseProxy.PubSub,
+  pubsub_server: BeamGate.PubSub,
   live_view: [signing_salt: "mvp-salt"]
 
-config :reverse_proxy,
+config :beam_gate,
   docker_api_base: System.get_env("DOCKER_API_BASE", "http://localhost:2375"),
   docker_poll_interval_ms: 5_000,
   admin_user: System.get_env("PROXY_ADMIN_USER", "admin"),

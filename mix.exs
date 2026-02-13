@@ -1,9 +1,9 @@
-defmodule ReverseProxy.MixProject do
+defmodule BeamGate.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :reverse_proxy,
+      app: :beam_gate,
       version: "0.1.0",
       elixir: "~> 1.16",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -14,7 +14,7 @@ defmodule ReverseProxy.MixProject do
 
   def application do
     [
-      mod: {ReverseProxy.Application, []},
+      mod: {BeamGate.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

@@ -1,8 +1,8 @@
 import Config
 
 if config_env() == :prod do
-  cert_path = Application.fetch_env!(:reverse_proxy, :cert_path)
-  key_path = Application.fetch_env!(:reverse_proxy, :key_path)
+  cert_path = Application.fetch_env!(:beam_gate, :cert_path)
+  key_path = Application.fetch_env!(:beam_gate, :key_path)
 
   https_opts =
     if File.exists?(cert_path) and File.exists?(key_path) do
@@ -18,7 +18,7 @@ if config_env() == :prod do
     end
 
   # In production, sessions must use a real external secret.
-  config :reverse_proxy, ReverseProxyWeb.Endpoint,
+  config :beam_gate, BeamGateWeb.Endpoint,
     http: [ip: {0, 0, 0, 0}, port: String.to_integer(System.get_env("PORT", "4000"))],
     https: https_opts,
     secret_key_base: System.fetch_env!("SECRET_KEY_BASE"),

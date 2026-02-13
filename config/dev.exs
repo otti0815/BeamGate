@@ -1,6 +1,6 @@
 import Config
 
-config :reverse_proxy, ReverseProxyWeb.Endpoint,
+config :beam_gate, BeamGateWeb.Endpoint,
   http: [ip: {0, 0, 0, 0}, port: String.to_integer(System.get_env("PORT", "4000"))],
   code_reloader: true,
   debug_errors: true,

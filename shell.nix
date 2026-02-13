@@ -22,7 +22,7 @@ pkgs.mkShell {
     export MIX_ENV=dev
     export LANG=en_US.UTF-8
     export SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
-    echo "ReverseProxy nix-shell ready."
+    echo "BeamGate nix-shell ready."
     echo "Next: mix deps.get && mix phx.server"
   '';
 }

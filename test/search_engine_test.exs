@@ -1,7 +1,7 @@
-defmodule ReverseProxy.SearchEngineTest do
+defmodule BeamGate.SearchEngineTest do
   use ExUnit.Case, async: false
 
-  alias ReverseProxy.Search
+  alias BeamGate.Search
 
   setup do
     {:ok, indexes} = Search.list_indexes()

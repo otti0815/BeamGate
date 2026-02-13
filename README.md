@@ -1,4 +1,6 @@
-# ReverseProxy + Search Engine (Elixir)
+# BeamGate
+
+Repository: [github.com/otti0815/BeamGate](https://github.com/otti0815/BeamGate)
 
 A Phoenix/Elixir application that combines:
 
@@ -62,7 +64,7 @@ Supported container labels:
 - `proxy.auth.user=admin`
 - `proxy.auth.pass=secret`
 - `proxy.req_header.x-foo=bar`
-- `proxy.resp_header.x-powered-by=reverse-proxy`
+- `proxy.resp_header.x-powered-by=beam-gate`
 
 ## Environment variables
 
@@ -168,9 +170,9 @@ Note: this project currently enforces a high global coverage threshold. If `mix 
 
 ## Development notes
 
-- Main app supervisor: `lib/reverse_proxy/application.ex`
-- Proxy code: `lib/reverse_proxy/proxy/*`
-- Discovery + control plane: `lib/reverse_proxy/discovery/*`, `lib/reverse_proxy/control_plane*`
-- Search engine: `lib/reverse_proxy/search*`
-- Search API controller: `lib/reverse_proxy_web/controllers/search_controller.ex`
-- Router: `lib/reverse_proxy_web/router.ex`
+- Main app supervisor: `lib/beam_gate/application.ex`
+- Proxy code: `lib/beam_gate/proxy/*`
+- Discovery + control plane: `lib/beam_gate/discovery/*`, `lib/beam_gate/control_plane*`
+- Search engine: `lib/beam_gate/search*`
+- Search API controller: `lib/beam_gate_web/controllers/search_controller.ex`
+- Router: `lib/beam_gate_web/router.ex`

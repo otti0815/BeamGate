@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  reverse-proxy:
+  beam-gate:
     build: .
     ports:
       - "80:4000"

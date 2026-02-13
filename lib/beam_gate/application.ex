@@ -1,0 +1,24 @@
+defmodule BeamGate.Application do
+  @moduledoc false
+  use Application
+
+  def start(_type, _args) do
+    children = [
+      {Finch, name: BeamGate.Finch},
+      {Phoenix.PubSub, name: BeamGate.PubSub},
+      BeamGate.Search.Supervisor,
+      BeamGate.ControlPlane,
+      BeamGate.Proxy.HealthChecker,
+      BeamGate.Discovery.DockerWatcher,
+      BeamGateWeb.Endpoint
+    ]
+
+    opts = [strategy: :one_for_one, name: BeamGate.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+
+  def config_change(changed, _new, removed) do
+    BeamGateWeb.Endpoint.config_change(changed, removed)
+    :ok
+  end
+end
